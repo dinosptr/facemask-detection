@@ -15,14 +15,14 @@ def process_image(uploaded_file, _model, confidence_threshold):
       Image: The processed image with detected faces and masks highlighted.
   """
 
-    # Baca gambar
+  # Read Image
   image = Image.open(uploaded_file)
 
-  # Jalankan inferensi pada gambar dengan confidence threshold yang ditetapkan
+  # Run inference on the image with the confidence threshold set
   results = _model(image, conf=confidence_threshold)  # return a list of Results objects
   for result in results:
     result.save(filename='result.jpg')
 
-  # Tampilkan hasil deteksi
+  # Return the detected image result
   result_image = Image.open('result.jpg')
   return result_image

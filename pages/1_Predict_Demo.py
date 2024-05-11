@@ -31,15 +31,15 @@ def main():
 
         # Functionality for capturing images using webcam (implementation is deferred)
         elif option == "Take Picture":
-            # Gunakan st.camera_input untuk mengambil gambar
+            # Use st.camera_input to take a picture
             image = st.camera_input("Take a picture")
 
             if image is not None:
-                # Proses gambar dengan menggunakan st.cache
+                # Process images using st.cache
                 result_image = process_image(image, model, confidence_threshold)
 
-                # Tampilkan hasil deteksi
-                st.image(result_image, caption='Result PPE Detection', use_column_width=True)
+                # Show detection results
+                st.image(result_image, caption='Result FaceMask Detection', use_column_width=True)
 
     elif input_type == "Video":
         st.title("Upload Video for Face Mask Detection")
