@@ -1,73 +1,73 @@
 # Real-Time Face Mask Detection with Streamlit and YOLOv8
 
-#### Link Demo: [FaceMask-Detection](https://facemask-detection-82rvznihkuz6cpffsrl4ay.streamlit.app/)
+#### Demo Link: [FaceMask-Detection](https://facemask-detection-82rvznihkuz6cpffsrl4ay.streamlit.app/)
 
-# How to run locally
-## Persyaratan Sistem
-- **Sistem Operasi:** Windows, MacOS, atau Linux
+# How to Run Locally
+## System Requirements
+- **Operating System:** Windows, MacOS, or Linux
 - **Python 3.10**
 - **Git**
-- **Ruang Disk:** Setidaknya 3GB ruang disk yang tersedia
+- **Disk Space:** At least 3GB of available disk space
 
-## Pemeriksaan Pra-instalasi
+## Pre-Installation Checks
 
-1. **Periksa Instalasi Python:**
-   - Buka Command Prompt (cmd).
-   - Periksa apakah Python terinstal dengan menjalankan:
+1. **Check Python Installation:**
+   - Open Command Prompt (cmd).
+   - Check if Python is installed by running:
      
     ```bash
     python --version
     ```
      
-   - Jika Python belum terinstal, unduh dan instal dari [python.org](https://www.python.org/downloads/). Pastikan untuk memilih versi yang kompatibel dengan sistem operasi Anda.
+   - If Python is not installed, download and install from [python.org](https://www.python.org/downloads/). Make sure to choose a version compatible with your operating system.
 
-2. **Periksa Instalasi Git:**
-   - Periksa apakah Git terinstal dengan menjalankan:
+2. **Check Git Installation:**
+   - Check if Git is installed by running:
      ```bash
      git --version
      ```
-   - Jika Git belum terinstal, unduh dan instal dari [git-scm.com](https://git-scm.com/downloads/).
+   - If Git is not installed, download and install from [git-scm.com](https://git-scm.com/downloads/).
 
-## Langkah Instalasi
+## Installation Steps
 
-### 3. Navigasi ke Folder Proyek melalui Command Prompt:
-   - Ubah direktori saat ini ke folder proyek Anda menggunakan perintah cd.
+### 3. Navigate to Project Folder via Command Prompt:
+   - Change the current directory to your project folder using the cd command.
 
-### 4. Buat Lingkungan Virtual dan Folder Proyek:
-   - Buat folder baru dengan nama "facemaskdetection-project" menggunakan perintah berikut:
+### 4. Create Virtual Environment and Project Folder:
+   - Create a new folder named "facemaskdetection-project" using the following command:
      ```bash
      mkdir facemaskdetection-project
      ```
-   - Navigasi ke folder "facemaskdetection-project":
+   - Navigate to the "facemaskdetection-project" folder:
      ```bash
      cd facemaskdetection-project
      ```
-   - Buat lingkungan virtual Python baru dengan nama "your-env-name" menggunakan perintah berikut:
+   - Create a new Python virtual environment named "facemaskEnv" using the following command:
      ```bash
      python -m venv facemaskEnv 
      ```
-     atau 
+     or 
      ```bash
      py -m venv facemaskEnv
      ```
-     - Aktifkan lingkungan virtual:
-       - Pada Windows:
+     - Activate the virtual environment:
+       - On Windows:
          ```bash
          .\facemaskEnv\Scripts\activate
          ```
-       - Pada MacOS/Linux:
+       - On MacOS/Linux:
          ```bash
          source facemaskEnv/bin/activate
          ```
 
-Sekarang Anda telah menyiapkan folder proyek bernama "facemaskdetection-project" dengan lingkungan virtual Python bernama "facemaskEnv" Selanjutnya, lanjutkan dengan langkah instalasi yang tersisa dalam folder proyek ini.
+Now you have set up the project folder named "facemaskdetection-project" with a Python virtual environment named "facemaskEnv". Next, proceed with the remaining installation steps within this project folder.
 
-### 5. Clone Berkas Proyek:
-   - Klona repositori proyek yang berisi file notebook, model, dan skrip Streamlit dari GitHub dengan perintah berikut:
+### 5. Clone Project Files:
+   - Clone the project repository containing notebook files, models, and Streamlit script from GitHub with the following command:
      ```bash
      git clone https://github.com/dinosptr/facemask-detection.git
      ```
-   - Navigasi ke folder repositori yang telah di-clone:
+   - Navigate to the cloned repository folder:
      ```bash
      cd facemask-detection
      ```
