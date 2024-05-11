@@ -1,105 +1,35 @@
 import streamlit as st
-from PIL import Image
-from ultralytics import YOLO
 import cv2
-import os
-import shutil
+from image_processing import process_image
+from video_processing import display_detected_frames, save_uploaded_file, clear_directory
+from yolo_model import load_model
 
-model = YOLO('model/yolov8s_facemask.pt')
-
-@st.cache_data
-def process_image(uploaded_file, _model, confidence_threshold):
-    # Baca gambar
-    image = Image.open(uploaded_file)
-
-    # Jalankan inferensi pada gambar dengan confidence threshold yang ditetapkan
-    results = _model(image, conf=confidence_threshold)  # return a list of Results objects
-    for result in results:
-        result.save(filename='result.jpg')
-
-    # Tampilkan hasil deteksi
-    result_image = Image.open('result.jpg')
-    return result_image
-
-
-def save_uploaded_file(uploaded_file):
-    # output nama file
-    file_name = "vid_sample.mp4"
-
-    # membuat directory jika tidak ada
-    os.makedirs("uploads", exist_ok=True)
-
-    # menyimpan file yang di unggah
-    with open(os.path.join("uploads", file_name), "wb") as f:
-        f.write(uploaded_file.getbuffer())
-
-    return os.path.join("uploads", file_name)
-
-def clear_directory(directory):
-    # Pastikan direktori ada
-    if os.path.exists(directory):
-        # Hapus semua isi direktori
-        shutil.rmtree(directory)
-
-def _display_detected_frames(conf, model, st_frame, image, is_display_tracking=None, tracker=None):
-    """
-    Display the detected objects on a video frame using the YOLOv8 model.
-
-    Args:
-    - conf (float): Confidence threshold for object detection.
-    - model (YoloV8): A YOLOv8 object detection model.
-    - st_frame (Streamlit object): A Streamlit object to display the detected video.
-    - image (numpy array): A numpy array representing the video frame.
-    - is_display_tracking (bool): A flag indicating whether to display object tracking (default=None).
-
-    Returns:
-    None
-    """
-
-    # Display object tracking, if specified
-    if is_display_tracking:
-        res = model.track(image, conf=conf, persist=True, tracker=tracker)
-    else:
-        # predict object dengan yolov8
-        res = model.predict(image, conf=conf)
-
-    # # Plot the detected objects on the video frame
-    res_plotted = res[0].plot()
-    st_frame.image(res_plotted,
-                   caption='Detected Video',
-                   channels="BGR",
-                   use_column_width=True
-                   )
+# Load the YOLOv8 model (moved to a separate function)
+model = load_model()
 
 def main():
-    # Sidebar untuk memilih jenis input (gambar atau video) dan mengatur confidence threshold
+    # User interface elements in the sidebar
     st.sidebar.title("Options")
     input_type = st.sidebar.radio("Select Input Type", ["Image", "Video", "Webcam"])
     confidence_threshold = st.sidebar.slider("Confidence Threshold", min_value=0.0, max_value=1.0, value=0.5, step=0.05)
 
     if input_type == "Image":
-        st.title("Deteksi PPE (Personal Protective Equipment)")
-
-        # Buat radio button
+        st.title("Face Mask Detection")
         option = st.radio(
-            "Pilih sumber gambar:",
-            ("Upload Gambar", "Take Picture"),
-            horizontal=True,
+            "Choose Image Source:",
+            ("Upload Image", "Take Picture"),
+            horizontal=True
         )
 
-        # Bagian untuk upload gambar
-        if option == "Upload Gambar":
+        if option == "Upload Image":
             upload_icon = ":camera:"
-            uploaded_file = st.file_uploader(f"{upload_icon} Unggah Gambar PPE (Personal Protective Equipment)", type=["jpg", "jpeg", "png"])
+            uploaded_file = st.file_uploader(f"{upload_icon} Upload Image", type=["jpg", "jpeg", "png"])
 
             if uploaded_file is not None:
-                # Proses gambar dengan menggunakan st.cache
-                result_image = process_image(uploaded_file, model, confidence_threshold)
+                processed_image = process_image(uploaded_file, model, confidence_threshold)
+                st.image(processed_image, caption='Result: Face Mask Detection', use_column_width=True)
 
-                # Tampilkan hasil deteksi
-                st.image(result_image, caption='Result PPE Detection', use_column_width=True)
-
-        # Bagian untuk take picture
+        # Functionality for capturing images using webcam (implementation is deferred)
         elif option == "Take Picture":
             # Gunakan st.camera_input untuk mengambil gambar
             image = st.camera_input("Take a picture")
@@ -112,43 +42,35 @@ def main():
                 st.image(result_image, caption='Result PPE Detection', use_column_width=True)
 
     elif input_type == "Video":
-        # Nama direktori yang akan dihapus
-        directories_to_clear = ["uploads"]
-
-        # Hapus semua isi dari setiap direktori yang ditentukan
-        for directory in directories_to_clear:
-            clear_directory(directory)
-        
-        st.title("Unggah Video PPE (Personal Protective Equipment)")
+        st.title("Upload Video for Face Mask Detection")
         upload_icon = ":movie_camera:"
-        uploaded_video = st.file_uploader(f"{upload_icon} Unggah Video PPE (Personal Protective Equipment) (Max 10MB)", type=["mp4", 'gif'], accept_multiple_files=False)
+        uploaded_video = st.file_uploader(f"{upload_icon} Upload Video (Max 200MB)", type=["mp4", 'gif'], accept_multiple_files=False)
+
         if uploaded_video is not None:
-            save_uploaded_file(uploaded_video)
+            video_path = save_uploaded_file(uploaded_video)
             video_bytes = uploaded_video.read()
             st.video(video_bytes)
-            st.write("Tunggu sesaat, hasil deteksi dari video sedang diproses...")
+            st.write("Processing video... Please wait.")
+
             try:
-                vid_cap = cv2.VideoCapture('uploads/vid_sample.mp4')
+                vid_cap = cv2.VideoCapture(video_path)
                 st_frame = st.empty()
                 while (vid_cap.isOpened()):
                     success, image = vid_cap.read()
                     if success:
-                        _display_detected_frames(0.5,
-                                                model,
-                                                st_frame,
-                                                image,
-                                                False,
-                                                None
-                                                )
+                        display_detected_frames(confidence_threshold, model, st_frame, image)
                     else:
                         vid_cap.release()
                         break
             except Exception as e:
                 st.sidebar.error("Error loading video: " + str(e))
+            finally:
+                clear_directory("uploads")  # Clear temporary files after video processing
+
     elif input_type == "Webcam":
         webcam_icon = ":camera:"
-        st.title(f"{webcam_icon} Webcam PPE (Personal Protective Equipment) as input")
-        st.write("Still Progress ...")
+        st.title(f"{webcam_icon} Face Mask Detection using Webcam")
+        st.info("Webcam support is currently under development.")
 
 if __name__ == "__main__":
     main()
