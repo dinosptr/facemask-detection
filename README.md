@@ -90,6 +90,7 @@ After the command to run the Streamlit script, a new line is added informing the
 
 ### 8. Tampilan Website
 ![Alt text](assets/website_display.png)
+![Alt text](assets/website_display_page2.png)
 
 # Contoh output Image
 ![Alt text](assets/result.jpg)
