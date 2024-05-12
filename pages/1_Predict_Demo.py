@@ -11,7 +11,7 @@ def main():
     # User interface elements in the sidebar
     st.sidebar.title("Options")
     input_type = st.sidebar.radio("Select Input Type", ["Image", "Video", "Webcam"])
-    confidence_threshold = st.sidebar.slider("Confidence Threshold", min_value=0.0, max_value=1.0, value=0.5, step=0.05)
+    confidence_threshold = st.sidebar.slider("Confidence Threshold", min_value=0.0, max_value=1.0, value=0.25, step=0.05)
 
     if input_type == "Image":
         st.title("Face Mask Detection")
