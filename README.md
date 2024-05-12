@@ -1,7 +1,6 @@
 # Real-Time Face Mask Detection with Streamlit and YOLOv8
 
-#### Demo Link: [FaceMask-Detection](https://facemask-detection-82rvznihkuz6cpffsrl4ay.streamlit.app/) (Not support Safari)
-
+#### Demo Link: [FaceMask-Detection](https://facemask-detection-82rvznihkuz6cpffsrl4ay.streamlit.app/)
 # How to Run Locally
 ## System Requirements
 - **Operating System:** Windows, MacOS, or Linux
